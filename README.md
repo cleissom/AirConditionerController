@@ -115,7 +115,7 @@ Para compilar a aplicação é necessário:
 
 ### Software Hospedeiro Computador
 
-O Software Hospedeiro é um programa executado em um computador que deverá ser conectado à um dispositivo de controle e então poder realizar a transferência para receber os logs gerados.
+O Software Hospedeiro é um programa executado em um computador que deverá ser conectado à um dispositivo de controle através da serial e então poder realizar a transferência para receber os logs gerados.
 
 Este software apresenta um menu por terminal em que é possível selecionar:
 
@@ -129,6 +129,19 @@ g++ Serial.cpp -o serial
 ```
 
 A compilação irá gerar o arquivo `serial` que deverá ser executado por terminal.
+
+### Software Hospedeiro Smartphone
+
+O Software Hospedeiro Smartphone é um aplicativo para Android que deverá se conectar com um dispositivo de controle por Bluetooth e então poder realizar a transferência para receber os logs gerados.
+
+Este software apresenta uma tela com botões onde é possível:
+
+* **Carregar**: Este botão se conecta com o dispositivo e recebe os logs
+* **Listar:** Este botão lista todos os logs recebidos e que estão presentes no aplicativo. Os items são mostrados logo abaixo deste botão.
+
+Para compilar este software é nessário instalar o software Android Studio e sua toolchain de compilação para Android. Adicione o projeto que está presente na pasta `src/hospedeiro_smartphone` ao Android Studio e então é possível compilar o projeto dentro do programa.
+
+*Obs*.: A interface chama as funções em C++ presentes na pasta `src/hospedeiro_smartphone/app/src/main/cpp/`
 
 
 
@@ -152,5 +165,33 @@ Um diagrama de fluxo simplificado da execução do programa no microcontrolador 
 
 ## Integração
 
+Um vídeo demonstração do protótipo implementado pode ser visualizado no link abaixo:
+
+https://youtu.be/1VUw7NChK6c
+
+## Plano de testes
+
+### Teste de Violação
+
+Este teste irá verificar os casos em que o usuário não segue o fluxo estabelecido.
+
+* **Abrir uma porta/janela, fechar e abrir novamente**: A lógica implementada independe do número de vezes em que as portas/janelas são abertas/fechadas
+* **Clique longo para enviar log enquanto uma porta/janela estiver aberta**: O log poderá ser enviado apenas quando todas as portas/janelas estiverem fechadas.
+
+### Teste de Memória
+
+Foi realizado um teste de memória em que a lista de logs foi incrementada com novos dados em um loop infinito após a inicialização do sistema. Foi possível adicionar cerca de 4320 itens de log até chegar ao erro de falta de memória.
+
 ## Desempenho
 
+### Memória Flash
+
+O microcontrolador escolhido possui 2MB de Flash QSPI on-board. O binário compilado possui o tamando de 311,3 KB e portanto ocupa cerca de 15% da memória Flash total.
+
+### Memória SRAM
+
+O microcontrolador escolhido possui 264KB de memória SRAM *on-chip*. Com o teste de memória realizado anteriormente é possível deduzir a quantidade de memória que está sendo utilizada e a quantidade disponível para alocação dinâmica. Como a estrutura para log é formada por um identificador de 1 byte e duas strings de 20 bytes, o tamanho deste dado completo é 41 bytes. O Nodo da lista tem o tamanho do dado mais 4 bytes para o ponteiro para o próximo dado, resultando:
+
+4320 * 45 = 194,4 KB
+
+Portanto, há disponível cerca de 194,4 KB para a alocação dinâmica e consequentemente a aplicação utiliza cerca 69.6 KB da memória SRAM total (valor incluindo *stack*).

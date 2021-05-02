@@ -9,7 +9,7 @@
 #include <termios.h> // Contains POSIX terminal control definitions
 #include <unistd.h>  // write(), read(), close()
 
-#include "List.hpp"
+#include "../List.hpp"
 
 typedef struct
 {
@@ -27,7 +27,7 @@ ostream &operator<<(ostream &os, const log_t &log)
 int main()
 {
     // Open the serial port. Change device path as needed (currently set to an standard FTDI USB-UART cable type device)
-    int serial_port = open("/dev/ttyACM1", O_RDWR);
+    int serial_port = open("/dev/ttyACM0", O_RDWR);
 
     // Create new termios struc, we call it 'tty' for convention
     struct termios tty;

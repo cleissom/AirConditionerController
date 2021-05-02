@@ -1,4 +1,5 @@
-#include "../Node.hpp"
+#include "Node.hpp"
+#include <sstream>
 
 template <typename T>
 class List
@@ -15,6 +16,7 @@ public:
   T removeFirst();
   T removeNode(T dat);
   void listAll();
+  void listAll(stringstream &s);
 };
 
 template <typename T>
@@ -128,6 +130,17 @@ void List<T>::listAll()
   while (aux != 0)
   {
     cout << aux->getVal() << endl;
+    aux = aux->getNext();
+  }
+}
+
+template <typename T>
+void List<T>::listAll(stringstream &s)
+{
+  Node<T> *aux = head;
+  while (aux != 0)
+  {
+    s << aux->getVal() << endl;
     aux = aux->getNext();
   }
 }
